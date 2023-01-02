@@ -89,7 +89,7 @@ window.addEventListener("load", initMap);
 if (document.querySelector("#submit")) {
     submit.addEventListener("click", function (e) {
         e.preventDefault();
-        if (validate(new formData(document.querySelector("#form"))))
+        if (validate(new FormData(document.querySelector("#form"))))
             document.querySelector("#invitation").textContent = "Place a marker.";
     }
     );
