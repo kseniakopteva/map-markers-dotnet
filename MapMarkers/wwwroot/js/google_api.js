@@ -1,6 +1,12 @@
 let markers = [];
+let start = false;
+let dest = false;
 
 function initMap() {
+
+    const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer();
+
     let coordinates = {
         lat: 56.94977,
         lng: 24.10485,
@@ -12,13 +18,17 @@ function initMap() {
         scrollwheel: false,
     });
 
+    directionsRenderer.setMap(googleMap);
+    document.querySelector("#routeButton").addEventListener("click", () => {
+        calculateAndDisplayRoute(directionsService, directionsRenderer, markers);
+    });
+
     googleMap.addListener("click", (event) => {
         let form = document.querySelector("#form");
         let formData = new FormData(document.querySelector("#form"));
 
         if (!formData.get("name")) {
             if (!confirm('Are you sure you want to create an empty marker?')) {
-                console.log("wth!");
                 return;
             }
         }
@@ -50,13 +60,13 @@ function initMap() {
             markerInfo += "<p>" + markerDesc + "</p>";
         }
         if (markerType !== null && markerType !== "none") {
-            markerInfo += "<h4>type: </h4>" + "<p>" + markerType.replace(/-/g, " ") + "</p>";
+            markerInfo += "<h4>Type</h4>" + "<p>" + markerType.replace(/-/g, " ") + "</p>";
         }
         if (markerDate) {
-            markerInfo += "<h4>date: </h4>" + "<p>" + markerDate + "</p>";
+            markerInfo += "<h4>Date</h4>" + "<p>" + markerDate + "</p>";
         }
         if (markerCreated) {
-            markerInfo += "<h4>created: </h4>" + "<p>" + new Date().toLocaleString() + "</p>";
+            markerInfo += "<h4>Created</h4>" + "<p>" + new Date().toLocaleString() + "</p>";
         }
 
         const infoWindow = new google.maps.InfoWindow({
@@ -66,7 +76,8 @@ function initMap() {
         let marker = new google.maps.Marker({
             position: event.latLng,
             map: googleMap,
-            title: markerTitle
+            title: markerTitle,
+            type: markerType
         });
 
         if (infoWindow.content) {
@@ -84,13 +95,73 @@ function initMap() {
     });
 }
 
+function calculateAndDisplayRoute(directionsService, directionsRenderer, markers) {
+    
+    let start = markers.filter(obj => {
+        return obj.type === "starting-point";
+    })[0];
+
+    let dest = markers.filter(obj => {
+        return obj.type === "destination";
+    })[0];
+
+    if (!start && !dest) {
+        alert("You haven't set a starting point and a destination!");
+        return;
+    }
+
+    if (!start) {
+        alert("You haven't set a starting point!");
+        return;
+    }
+    if (!dest) {
+        alert("You haven't set a destination!");
+        return;
+    }
+
+    let waypts = markers.filter(obj => {
+        return obj.type === "waypoint";
+    })
+
+    directionsService
+        .route({
+            origin: start.position,
+            destination: dest.position,
+            waypoints: waypts.position,
+            travelMode: google.maps.TravelMode.DRIVING,
+        })
+        .then((response) => {
+            directionsRenderer.setDirections(response);
+        })
+        .catch((e) => window.alert("Directions request failed due to " + e.code));
+}
+
 window.addEventListener("load", initMap);
 
 if (document.querySelector("#submit")) {
     submit.addEventListener("click", function (e) {
         e.preventDefault();
-        if (validate(new FormData(document.querySelector("#form"))))
+        if (validate(new FormData(document.querySelector("#form")))) {
+
+            let type = new FormData(document.querySelector("#form")).get("type");
+            if (type === "starting-point") {
+                if (start == true) {
+                    alert("There is already a starting point!");
+                    return;
+                } else {
+                    start = true;
+                }
+            } else if (type === "destination") {
+                if (dest == true) {
+                    alert("There is already a destination!");
+                    return;
+                } else {
+                    dest = true;
+                }
+            }
+
             document.querySelector("#invitation").textContent = "Place a marker.";
+        }
     }
     );
 }

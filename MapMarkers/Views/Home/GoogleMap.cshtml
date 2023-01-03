@@ -5,6 +5,19 @@
     <script src="/js/google_api.js"></script>
 }
 <div class="flex">
+    <div class="sidebar">
+        <h2>Draw a route</h2>
+        <p>
+            Each route needs to have
+            <ul>
+                <li>1 starting point,</li>
+                <li>0 or more waypoints</li>
+                <li>and 1 destination.</li>
+            </ul>
+        </p>
+        <button type="submit" id="routeButton" class="btn btn-primary">Display Route</button>
+        <p id="directions-panel"></p>
+    </div>
     <div class="google-map-wrapper map-wrapper">
 		<div id="googleMap" class="google-map"></div>
 	</div>
@@ -47,7 +60,7 @@
                 <input name="show-date" id="show-date" value="show-date" type="checkbox" />
                 <label for="show-date">Include date and time of marker creation</label>
             </div>
-            <button type="submit" id="submit" class="submit-button">Submit</button>
+            <button type="submit" id="submit" class="submit-button btn btn-primary">Submit</button>
             <div id="invitation" class="invitation"></div>
         </form>
     </div>
