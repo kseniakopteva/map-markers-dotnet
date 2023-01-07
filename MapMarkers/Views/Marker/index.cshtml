@@ -1,7 +1,17 @@
-﻿@{
+﻿@model IEnumerable<Marker>
+@{
     ViewData["Title"] = "Home Page";
 }
 @section scripts {
+    <script>
+        // to display markers I need to get them from the database through view and pass to js;
+        // doesn't work, can't serialize, error:
+        // NotSupportedException: The type 'Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1[MapMarkers.Models.Marker]' 
+        // can only be serialized using async serialization methods.
+
+        //@*let model = @Html.Raw(Json.Serialize(Model));*@
+        //console.log(model);
+    </script>
     <script src="/js/google_api.js"></script>
 }
 <div class="flex">
@@ -65,3 +75,4 @@
         </form>
     </div>
 </div>
+

@@ -13,12 +13,7 @@ namespace MapMarkers.Controllers
             _logger = logger;
         }
 
-        public IActionResult RegularMap()
-        {
-            return View();
-        }
-
-        public IActionResult GoogleMap()
+        public IActionResult Index()
         {
             return View();
         }

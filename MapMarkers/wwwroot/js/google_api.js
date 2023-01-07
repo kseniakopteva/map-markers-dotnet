@@ -2,6 +2,8 @@ let markers = [];
 let start = false;
 let dest = false;
 
+//console.log(model);
+
 function initMap() {
 
     const directionsService = new google.maps.DirectionsService();
@@ -88,6 +90,7 @@ function initMap() {
                 });
             });
         }
+        console.log(JSON.stringify(event.latLng));
 
         document.querySelector("#invitation").textContent = "";
         form.reset();
@@ -96,7 +99,7 @@ function initMap() {
 }
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer, markers) {
-    
+
     let start = markers.filter(obj => {
         return obj.type === "starting-point";
     })[0];
